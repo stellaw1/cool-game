@@ -2,38 +2,49 @@
 
 public class PlayerMovement : MonoBehaviour
 {
-    public bool jumpable = false;
-    public Rigidbody rb;
-    public float speed = 20f;
-    public float jumpHeight = 200f;
+    public CharacterController controller;
 
-    // Update is called once per frame
-    void FixedUpdate()
+    public float speed = 12f;
+    public float gravity = -20f;
+    public float jumpHeight = 3f;
+    
+    public Transform groundCheck;
+    public float groundDistance = 0.4f;
+    public LayerMask groundMask;
+
+    Vector3 velocity;
+    bool isGrounded;
+
+    void Start()
     {
-        float x = Input.GetAxis("Horizontal") * speed * Time.deltaTime;
-        // float y = Input.GetAxis("Jump") * speed * Time.deltaTime;
-        float z = Input.GetAxis("Vertical") * speed * Time.deltaTime;
 
-        transform.position += new Vector3(x, 0, z);
-
-        // jump
-        if (Input.GetKey("space"))
-        {
-            if (jumpable) 
-            {
-                jumpable = false;
-                // Debug.Log("Jump: " + transform.position.y);
-                rb.AddForce(0, jumpHeight, 0);
-            }
-        }
     }
 
-    void OnCollisionEnter (Collision collisionInfo) 
+    // Update is called once per frame
+    void Update()
     {
-        // Debug.Log(collisionInfo.collider.name);
-        if (collisionInfo.collider.tag == "Terrain") 
+        // ground check
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+
+        if (isGrounded && velocity.y < 0)
         {
-            jumpable = true;
+            velocity.y = -2f;
         }
+        
+        // horizontal movement
+        float x = Input.GetAxis("Horizontal");
+        float z = Input.GetAxis("Vertical");
+
+        // vertical movement
+        
+        if (Input.GetButtonDown("Jump") && isGrounded)
+        {
+            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+        }
+        velocity.y += gravity * Time.deltaTime;
+
+        // moving
+        Vector3 move = transform.right * x + velocity / speed + transform.forward * z;
+        controller.Move(move * speed * Time.deltaTime);
     }
 }
