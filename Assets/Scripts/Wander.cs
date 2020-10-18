@@ -46,9 +46,9 @@ public class Wander : MonoBehaviour
     IEnumerator doWander()
     {
         int rotTime = Random.Range(1, 3);  //rotate time
-        int rotateWait = Random.Range(1, 4); //time btw rotate
+        int rotateWait = Random.Range(1, 3); //time btw rotate
         int rotateLorR = Random.Range(0, 3); //Left or right rotate
-        int walkWait = Random.Range(1, 4); //time btw walking
+        int walkWait = Random.Range(1, 3); //time btw walking
         int walkTime = Random.Range(1, 5);
 
         isWandering = true;
